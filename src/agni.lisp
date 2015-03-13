@@ -9,7 +9,3 @@
 (defun write-archive (path files)
   "Writes an archive with all the files"
   )
-
-(defun get-files (path since)
-  "Gets the files"
-  )

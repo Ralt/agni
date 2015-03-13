@@ -7,4 +7,6 @@
   :components ((:module "src"
                         :components
                         ((:file "package")
+                         (:file "stat")
+                         (:file "file")
                          (:file "agni")))))
