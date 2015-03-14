@@ -3,17 +3,23 @@
 
 (defclass file ()
   ((path
-    :initarg :path)
+    :initarg :path
+    :reader path)
    (tar-path
-    :initarg :tar-path)
+    :initarg :tar-path
+    :reader tar-path)
    (mode
-    :initarg :mode)
+    :initarg :mode
+    :reader mode)
    (uid
-    :initarg :uid)
+    :initarg :uid
+    :reader uid)
    (gid
-    :initarg :gid)
+    :initarg :gid
+    :reader gid)
    (mtime
-    :initarg :mtime)))
+    :initarg :mtime
+    :reader mtime)))
 
 (defun get-files (path since)
   "Gets the files"
