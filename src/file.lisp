@@ -19,7 +19,34 @@
     :reader gid)
    (mtime
     :initarg :mtime
-    :reader mtime)))
+    :reader mtime)
+   (tar-byte-headers
+    ;; headers must be 500 bytes
+    :initform (make-array 500 :element-type '(unsigned-byte 8))
+    :accessor tar-byte-headers)))
+
+(defmethod file-tar-bytes ((f file) &key)
+  (tar-bytes-name f)
+  (tar-bytes-mode f)
+  (tar-bytes-uid f)
+  (tar-bytes-gid f)
+  (tar-bytes-size f)
+  (tar-bytes-mtime f)
+  (tar-bytes-typeflag f)
+  (tar-bytes-linkname f)
+  (tar-bytes-magic f)
+  (tar-bytes-version f)
+  (tar-bytes-uname f)
+  (tar-bytes-gname f)
+  (tar-bytes-devmajor f)
+  (tar-bytes-devminor f)
+  (tar-bytes-prefix f)
+  (tar-bytes-content f)
+  ;; checksum is last because it needs all the other bytes
+  (tar-bytes-chksum f)
+  (concatenate '(vector (unsigned-byte 8))
+               (tar-byte-headers f)
+               (tar-bytes-content f)))
 
 (defun get-files (path since)
   "Gets the files"
