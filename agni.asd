@@ -9,4 +9,6 @@
                         ((:file "package")
                          (:file "stat")
                          (:file "file")
+                         (:file "tar-bytes")
+                         (:file "archive")
                          (:file "agni")))))
