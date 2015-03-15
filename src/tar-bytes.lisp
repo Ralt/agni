@@ -4,7 +4,11 @@
 (defmethod tar-bytes-name ((f file) &key)
   (vector-add (mapcar #'char-code (coerce (tar-path f) 'list)) (tar-bytes-headers f) 0))
 
-(defmethod tar-bytes-mode ((f file) &key))
+(defmethod tar-bytes-mode ((f file) &key)
+  (vector-add (mapcar #'char-code (coerce (format nil "~O" (mode f)) 'list))
+              (tar-bytes-headers f)
+              100))
+
 (defmethod tar-bytes-uid ((f file) &key))
 (defmethod tar-bytes-gid ((f file) &key))
 (defmethod tar-bytes-size ((f file) &key))
