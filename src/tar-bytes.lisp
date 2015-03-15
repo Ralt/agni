@@ -1,7 +1,9 @@
 (in-package #:agni)
 
 
-(defmethod tar-bytes-name ((f file) &key))
+(defmethod tar-bytes-name ((f file) &key)
+  (vector-add (mapcar #'char-code (coerce (tar-path f) 'list)) (tar-byte-headers f) 0))
+
 (defmethod tar-bytes-mode ((f file) &key))
 (defmethod tar-bytes-uid ((f file) &key))
 (defmethod tar-bytes-gid ((f file) &key))
