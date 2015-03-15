@@ -32,6 +32,7 @@
   (tar-bytes-gid f)
   (tar-bytes-size f)
   (tar-bytes-mtime f)
+  (tar-bytes-chksum f)
   (tar-bytes-typeflag f)
   (tar-bytes-linkname f)
   (tar-bytes-magic f)
@@ -42,8 +43,7 @@
   (tar-bytes-devminor f)
   (tar-bytes-prefix f)
   (tar-bytes-content f)
-  ;; checksum is last because it needs all the other bytes
-  (tar-bytes-chksum f)
+  (tar-bytes-calculate-checksum f)
   (concatenate '(vector (unsigned-byte 8))
                (tar-byte-headers f)
                (tar-bytes-content f)))
