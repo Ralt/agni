@@ -20,10 +20,10 @@
    (mtime
     :initarg :mtime
     :reader mtime)
-   (tar-byte-headers
+   (tar-bytes-headers
     ;; headers must be 500 bytes
     :initform (make-array 500 :element-type '(unsigned-byte 8))
-    :accessor tar-byte-headers)))
+    :accessor tar-bytes-headers)))
 
 (defmethod file-tar-bytes ((f file) &key)
   (tar-bytes-name f)
@@ -45,7 +45,7 @@
   (tar-bytes-content f)
   (tar-bytes-calculate-checksum f)
   (concatenate '(vector (unsigned-byte 8))
-               (tar-byte-headers f)
+               (tar-bytes-headers f)
                (tar-bytes-content f)))
 
 (defun get-files (path since)
