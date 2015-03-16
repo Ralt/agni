@@ -18,3 +18,6 @@
   (loop
      :for char across string
      :collect (char-code char)))
+
+(defun integer-to-ascii-octal (integer)
+  (string-to-bytes (format nil "~o" integer)))

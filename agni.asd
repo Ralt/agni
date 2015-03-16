@@ -8,6 +8,8 @@
                         :components
                         ((:file "package")
                          (:file "stat")
+                         (:file "passwd")
+                         (:file "group")
                          (:file "file")
                          (:file "tar-bytes")
                          (:file "archive")
