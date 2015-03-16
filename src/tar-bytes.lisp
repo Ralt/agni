@@ -19,11 +19,11 @@
 (defconstant +prefix-offset+ 345)
 (defconstant +content-offset+ 512)
 
+(defvar *nul-byte* '(48))
+
 (defmethod tar-bytes-name ((f file) &key)
   "100 bytes"
-  (vector-add (concatenate '(vector (unsigned-byte 8))
-                           (string-to-bytes (tar-path f))
-                           #(#\0))
+  (vector-add (concatenate 'list (string-to-bytes (tar-path f)) *nul-byte*)
               (tar-bytes-headers f) +name-offset+))
 
 (defmethod tar-bytes-mode ((f file) &key)
@@ -55,7 +55,7 @@
 (defmethod tar-bytes-typeflag ((f file) &key)
   "1 byte
 Only support regular files for now"
-  (vector-add #(0) (tar-bytes-headers f) +typeflag-offset+))
+  (vector-add '(0) (tar-bytes-headers f) +typeflag-offset+))
 
 (defmethod tar-bytes-linkname ((f file) &key)
   "100 bytes
@@ -75,17 +75,17 @@ Regular files only for now, so nothing")
 
 (defmethod tar-bytes-uname ((f file) &key)
   "32 bytes"
-  (vector-add (concatenate '(vector (unsigned-byte 8))
+  (vector-add (concatenate 'list
                            (string-to-bytes (username-from-uid (uid f)))
-                           #(\0))
+                           *nul-byte*)
               (tar-bytes-headers f)
               +uname-offset+))
 
 (defmethod tar-bytes-gname ((f file) &key)
   "32 bytes"
-  (vector-add (concatenate '(vector (unsigned-byte 8))
+  (vector-add (concatenate 'list
                            (string-to-bytes (groupname-from-gid (gid f)))
-                           #(\0))
+                           *nul-byte*)
               (tar-bytes-headers f)
               +gname-offset+))
 

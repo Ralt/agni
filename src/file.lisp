@@ -44,7 +44,6 @@
     (tar-bytes-devminor f)
     (tar-bytes-prefix f)
     (tar-bytes-pad f)
-    (tar-bytes-content f)
     (tar-bytes-calculate-checksum f)
     (concatenate '(vector (unsigned-byte 8))
                  (tar-bytes-headers f)
