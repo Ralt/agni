@@ -1,13 +1,30 @@
 (in-package #:agni)
 
 
+(defconstant +name-offset+ 0)
+(defconstant +mode-offset+ 100)
+(defconstant +uid-offset+ 108)
+(defconstant +gid-offset+ 116)
+(defconstant +size+ 124)
+(defconstant +mtime+ 136)
+(defconstant +chksum+ 148)
+(defconstant +typeflag+ 156)
+(defconstant +linkname+ 157)
+(defconstant +magic+ 257)
+(defconstant +version+ 263)
+(defconstant +uname+ 265)
+(defconstant +gname+ 297)
+(defconstant +devmajor+ 329)
+(defconstant +devminor+ 337)
+(defconstant +prefix+ 345)
+
 (defmethod tar-bytes-name ((f file) &key)
-  (vector-add (mapcar #'char-code (coerce (tar-path f) 'list)) (tar-bytes-headers f) 0))
+  (vector-add (string-to-bytes (tar-path f)) (tar-bytes-headers f) +name-offset+))
 
 (defmethod tar-bytes-mode ((f file) &key)
-  (vector-add (mapcar #'char-code (coerce (format nil "~O" (mode f)) 'list))
+  (vector-add (string-to-bytes (format nil "~O" (mode f)))
               (tar-bytes-headers f)
-              100))
+              +mode-offset+))
 
 (defmethod tar-bytes-uid ((f file) &key))
 (defmethod tar-bytes-gid ((f file) &key))

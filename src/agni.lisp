@@ -13,3 +13,8 @@
        :for element in elements
        :do (setf (elt vector index) element)
        :do (incf index))))
+
+(defun string-to-bytes (string)
+  (loop
+     :for char across string
+     :collect (char-code char)))
