@@ -1,6 +1,8 @@
 (in-package #:agni)
 
 
+(defconstant +block-size+ 512)
+
 (defclass file ()
   ((path
     :initarg :path
@@ -21,8 +23,7 @@
     :initarg :mtime
     :reader mtime)
    (tar-bytes-headers
-    ;; headers must be 512 bytes
-    :initform (make-array 512 :element-type '(unsigned-byte 8))
+    :initform (make-array +block-size+ :element-type '(unsigned-byte 8))
     :accessor tar-bytes-headers)))
 
 (defmethod file-tar-bytes ((f file) &key)
@@ -45,12 +46,19 @@
     (tar-bytes-prefix f)
     (tar-bytes-pad f)
     (tar-bytes-calculate-checksum f)
-    (concatenate '(vector (unsigned-byte 8))
-                 (tar-bytes-headers f)
-                 (tar-bytes-content f stream))))
+    (let* ((content (tar-bytes-content f stream))
+           (l (length content)))
+      (concatenate '(vector (unsigned-byte 8))
+                   (tar-bytes-headers f)
+                   content
+                   ;; Pad with NUL bytes to end at +block-size+
+                   (make-array (if (> +block-size+ l)
+                                   (- +block-size+ l)
+                                   (- +block-size+ (mod l +block-size+)))
+                               :element-type '(unsigned-byte 8))))))
 
 (defmethod vector-add-integer ((f file) value constant &key)
-  (vector-add (integer-to-ascii-octal value)
+  (vector-add (string-to-bytes (format nil "~7,'0o" value))
               (tar-bytes-headers f)
               constant))
 

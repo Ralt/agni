@@ -38,11 +38,17 @@
 
 (defmethod tar-bytes-size ((f file) stream &key)
   "12 bytes"
-  (vector-add-integer f (file-length stream) +size-offset+))
+  (vector-add (string-to-bytes
+               (format nil "~11,'0o" (integer-to-ascii-octal (file-length stream))))
+              (tar-bytes-headers f)
+              +size-offset+))
 
 (defmethod tar-bytes-mtime ((f file) &key)
   "12 bytes"
-  (vector-add-integer f (mtime f) +mtime-offset+))
+  (vector-add (string-to-bytes
+               (format nil "~11,'0o" (integer-to-ascii-octal (mtime f))))
+              (tar-bytes-headers f)
+              +mtime-offset+))
 
 (defmethod tar-bytes-chksum ((f file) &key)
   "8 bytes"
@@ -53,7 +59,7 @@
 (defmethod tar-bytes-typeflag ((f file) &key)
   "1 byte
 Only support regular files for now"
-  (vector-add '(0) (tar-bytes-headers f) +typeflag-offset+))
+  (vector-add (string-to-bytes "0") (tar-bytes-headers f) +typeflag-offset+))
 
 (defmethod tar-bytes-linkname ((f file) &key)
   "100 bytes
@@ -61,13 +67,13 @@ Regular files only for now, so nothing")
 
 (defmethod tar-bytes-magic ((f file) &key)
   "6 bytes"
-  (vector-add (string-to-bytes "ustar")
+  (vector-add (string-to-bytes "ustar ")
               (tar-bytes-headers f)
               +magic-offset+))
 
 (defmethod tar-bytes-version ((f file) &key)
   "2 bytes"
-  (vector-add (string-to-bytes "00")
+  (vector-add (string-to-bytes " ")
               (tar-bytes-headers f)
               +version-offset+))
 
@@ -105,9 +111,12 @@ Voluntarily keep it empty")
     bytes))
 
 (defmethod tar-bytes-calculate-checksum ((f file) &key)
-  (vector-add (string-to-bytes (format nil "~6,'0o ~c"
-                                       (calculate-checksum (tar-bytes-headers f))
-                                       #\0))
+  (vector-add (append
+               (string-to-bytes
+                (format nil "~6,'0o"
+                        (calculate-checksum
+                         (tar-bytes-headers f))))
+               '(0 20))
               (tar-bytes-headers f)
               +chksum-offset+))
 
