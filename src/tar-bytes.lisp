@@ -36,10 +36,10 @@
   "8 bytes"
   (vector-add-integer f (gid f) +gid-offset+))
 
-(defmethod tar-bytes-size ((f file) stream &key)
+(defmethod tar-bytes-size ((f file) &key)
   "12 bytes"
   (vector-add (string-to-bytes
-               (format nil "~11,'0o" (integer-to-ascii-octal (file-length stream))))
+               (format nil "~11,'0o" (integer-to-ascii-octal (size f))))
               (tar-bytes-headers f)
               +size-offset+))
 

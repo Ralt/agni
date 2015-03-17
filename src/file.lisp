@@ -19,6 +19,9 @@
    (gid
     :initarg :gid
     :reader gid)
+   (size
+    :initarg :size
+    :reader size)
    (mtime
     :initarg :mtime
     :reader mtime)
@@ -32,7 +35,7 @@
     (tar-bytes-mode f)
     (tar-bytes-uid f)
     (tar-bytes-gid f)
-    (tar-bytes-size f stream)
+    (tar-bytes-size f)
     (tar-bytes-mtime f)
     (tar-bytes-chksum f)
     (tar-bytes-typeflag f)
@@ -46,15 +49,14 @@
     (tar-bytes-prefix f)
     (tar-bytes-pad f)
     (tar-bytes-calculate-checksum f)
-    (let* ((content (tar-bytes-content f stream))
-           (l (length content)))
+    (let* ((content (tar-bytes-content f stream)))
       (concatenate '(vector (unsigned-byte 8))
                    (tar-bytes-headers f)
                    content
                    ;; Pad with NUL bytes to end at +block-size+
-                   (make-array (if (> +block-size+ l)
-                                   (- +block-size+ l)
-                                   (- +block-size+ (mod l +block-size+)))
+                   (make-array (if (> +block-size+ (size f))
+                                   (- +block-size+ (size f))
+                                   (- +block-size+ (mod (size f) +block-size+)))
                                :element-type '(unsigned-byte 8))))))
 
 (defmethod vector-add-integer ((f file) value constant &key)
@@ -70,7 +72,7 @@
      path
      #'(lambda (pathname)
          (let ((path-string (namestring pathname)))
-           (multiple-value-bind (mode uid gid mtime ctime)
+           (multiple-value-bind (mode uid gid size mtime ctime)
                (file-stat path-string)
              (when (> ctime since)
                (push (make-instance 'file
@@ -79,6 +81,7 @@
                                     :mode mode
                                     :uid uid
                                     :gid gid
+                                    :size size
                                     :mtime mtime)
                      pathnames))))))
     pathnames))
