@@ -21,8 +21,8 @@
     :initarg :mtime
     :reader mtime)
    (tar-bytes-headers
-    ;; headers must be 500 bytes
-    :initform (make-array 500 :element-type '(unsigned-byte 8))
+    ;; headers must be 512 bytes
+    :initform (make-array 512 :element-type '(unsigned-byte 8))
     :accessor tar-bytes-headers)))
 
 (defmethod file-tar-bytes ((f file) &key)
