@@ -4,7 +4,7 @@
 (defconstant +block-size+ 512)
 
 ;;;; C macros translations
-(defconstant +--s-ifmt+ 0170000)
+(defconstant +--s-ifmt+ #o0170000)
 (defun is-type (mode mask)
   (= (logand mode +--s-ifmt+) mask))
 
@@ -15,13 +15,13 @@
 
 ;;;; Creates the functions: is-reg, is-dir, is-chr,
 ;;;; is-blk, is-fifo, is-lnk and is-sock.
-(define-file-type reg 0100000)
-(define-file-type dir 0040000)
-(define-file-type chr 0020000)
-(define-file-type blk 0060000)
-(define-file-type fifo 0010000)
-(define-file-type lnk 0120000)
-(define-file-type sock 0140000)
+(define-file-type reg #o0100000)
+(define-file-type dir #o0040000)
+(define-file-type chr #o0020000)
+(define-file-type blk #o0060000)
+(define-file-type fifo #o0010000)
+(define-file-type lnk #o0120000)
+(define-file-type sock #o0140000)
 
 (defclass file ()
   ((path
