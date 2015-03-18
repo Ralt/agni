@@ -70,7 +70,8 @@
   (tar-bytes-calculate-checksum f)
   (concatenate '(vector (unsigned-byte 8))
                (tar-bytes-headers f)
-               (when (is-reg (mode f))
+               (when (and (is-reg (mode f))
+                          (> (size f) 0))
                  (concatenate
                   '(vector (unsigned-byte 8))
                   (tar-bytes-content f)
