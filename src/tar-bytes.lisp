@@ -57,9 +57,19 @@
               +chksum-offset+))
 
 (defmethod tar-bytes-typeflag ((f file) &key)
-  "1 byte
-Only support regular files for now"
-  (vector-add (string-to-bytes "0") (tar-bytes-headers f) +typeflag-offset+))
+  "1 byte"
+  (let ((mode (mode f)))
+    (vector-add (string-to-bytes
+                 (write-to-string (cond
+                                    ((is-reg mode) 0)
+                                    ;; is-hard-link is NIY
+                                    ((is-lnk mode) 2)
+                                    ((is-chr mode) 3)
+                                    ((is-blk mode) 4)
+                                    ((is-dir mode) 5)
+                                    ((is-fifo mode) 6))))
+                (tar-bytes-headers f)
+                +typeflag-offset+)))
 
 (defmethod tar-bytes-linkname ((f file) &key)
   "100 bytes
@@ -105,10 +115,11 @@ Empty for now")
   "12 bytes
 Voluntarily keep it empty")
 
-(defmethod tar-bytes-content ((f file) stream &key)
-  (let ((bytes (make-array (file-length stream) :element-type '(unsigned-byte 8))))
-    (read-sequence bytes stream)
-    bytes))
+(defmethod tar-bytes-content ((f file) &key)
+  (with-open-file (stream (path f) :element-type '(unsigned-byte 8))
+    (let ((bytes (make-array (size f) :element-type '(unsigned-byte 8))))
+      (read-sequence bytes stream)
+      bytes)))
 
 (defmethod tar-bytes-calculate-checksum ((f file) &key)
   (vector-add (append
