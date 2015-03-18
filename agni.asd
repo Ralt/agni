@@ -1,5 +1,5 @@
 (asdf:defsystem #:agni
-  :description "Restore solution. Alternatively, backup solution too."
+  :description "Writes TAR archive files."
   :author "Florian Margaine <florian@margaine.com>"
   :license "MIT License"
   :serial t
